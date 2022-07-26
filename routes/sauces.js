@@ -22,7 +22,7 @@ router.put("/:id", auth, multer, saucesCtrl.modifySauce);
 // intercepte les requetes delete
 router.delete("/:id", auth, saucesCtrl.deleteSauce);
 // intercepte requete post de like
-//router.post("/:id/like", auth, saucesCtrl.likeSauce);
+router.post("/:id/like", auth, saucesCtrl.likeSauce);
 //----------------------------------------------------------------------------------
 // on exporte router
 module.exports = router;

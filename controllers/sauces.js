@@ -53,7 +53,6 @@ exports.deleteSauce = (req, res, next) => {
                 fs.unlink(`images/${filename}`, () => {
                     console.log('oui3')
                     Sauce.deleteOne({ _id: req.params.id })
-                    console.log('oui4')
                         .then(() => { res.status(200).json({ message: 'Objet supprimé !' }) })
                         .catch(error => res.status(401).json({ error }));
                 });
@@ -94,6 +93,7 @@ exports.likeSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
         //retourne une promesse avec reponse status 200 OK et l'élément en json
         .then((sauce) => {
+            console.log('sauce', sauce)
             // définition de variables
             let valeurVote;
             let votant = req.body.userId;
@@ -120,12 +120,14 @@ exports.likeSauce = (req, res, next) => {
             if (valeurVote === 0 && req.body.like === 1) {
                 // ajoute 1 vote positif à likes
                 sauce.likes += 1;
+                console.log("A voter", sauce.likes)
                 // le tableau usersLiked contiendra l'id de l'user
                 sauce.usersLiked.push(votant);
                 // si l'user a voté positivement et veut annuler son vote
             } else if (valeurVote === 1 && req.body.like === 0) {
                 // enlève 1 vote positif
                 sauce.likes -= 1;
+                console.log("A voter", sauce.likes)
                 // filtre/enlève l'id du votant du tableau usersLiked
                 const nouveauUsersLiked = like.filter((f) => f != votant);
                 // on actualise le tableau

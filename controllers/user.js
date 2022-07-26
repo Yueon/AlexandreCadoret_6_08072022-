@@ -5,16 +5,16 @@ const jwt = require('jsonwebtoken');
 // appel de model user
 const User = require("../models/User");
 // appel du modele de mot de passe
-//var passwordSchema = require("../models/Password");
-//const validator = require("validator");
+var passwordSchema = require("../models/Password");
+const validator = require("validator");
 // enregistrement de nouveaux utilisateurs grace a signup
 exports.signup = (req, res, next) => {
     // vérification dans la requete de l'email via validator
     const valideEmail = validator.isEmail(req.body.email);
     // vérification du shéma mot de passe
-    // const validePassword = passwordSchema.validate(req.body.password);
+    const validePassword = passwordSchema.validate(req.body.password);
     // si l'email et le mot de passe sont bon
-    if (valideEmail === true /*&& validePassword === true*/) {
+    if (valideEmail === true && validePassword === true) {
         // fonction pour hasher/crypter le mot de passe en 10 tours pour le sel
         bcrypt.hash(req.body.password, 10)
             .then(hash => {

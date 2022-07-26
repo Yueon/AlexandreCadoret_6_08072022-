@@ -1,9 +1,8 @@
-// appel de express
+
 const express = require('express');
-// constante app qui sera notre application
 const app = express();
 // appel de helmet, utilisé pour sécuriser les en-têtes http.
-//const helmet = require("helmet");
+const helmet = require("helmet");
 // appel du fichier de mongodb qui permet la connection à mongodb
 require("./mgdb");
 // on importe saucesRoutes
@@ -13,7 +12,7 @@ const userRoutes = require("./routes/user");
 // on on importe path qui donne accès au chemin du système de fichiers
 const path = require('path');
 // middleware d'helmet
-//app.use(helmet());
+app.use(helmet());
 //----------------------------------------------------------------------------------
 // CORS
 //----------------------------------------------------------------------------------
