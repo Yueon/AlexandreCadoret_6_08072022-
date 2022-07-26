@@ -1,4 +1,4 @@
-// on appelle password validator https://www.npmjs.com/package/password-validator
+// on appelle password validator
 var passwordValidator = require('password-validator');
 var passwordSchema = new passwordValidator();
 // le modèle du mot de passe
@@ -12,6 +12,5 @@ passwordSchema
     .is().not(/[\]()[{}<>@]/)
     .has().not().spaces()
     .is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist these values
-
 // exportation du shema modele
 module.exports = passwordSchema;
