@@ -10,7 +10,7 @@ exports.createSauce = (req, res, next) => {
     delete sauceObject._userId;
     const sauce = new Sauce({
         ...sauceObject,
-        image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
 
     sauce.save()
@@ -21,7 +21,7 @@ exports.createSauce = (req, res, next) => {
 exports.modifySauce = (req, res, next) => {
     const sauceObject = req.file ? {
         ...JSON.parse(req.body.sauce),
-        image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
     console.log("sauce", sauceObject)
     console.log("paramID", req.params.id)
@@ -47,11 +47,8 @@ exports.deleteSauce = (req, res, next) => {
             if (sauce.userId != req.auth.userId) {
                 res.status(401).json({ message: 'Not authorized' });
             } else {
-                console.log('oui1')
-                const filename = sauce.image.split('/images/')[1];
-                console.log('oui2')
+                const filename = sauce.imageUrl.split('/images/')[1];
                 fs.unlink(`images/${filename}`, () => {
-                    console.log('oui3')
                     Sauce.deleteOne({ _id: req.params.id })
                         .then(() => { res.status(200).json({ message: 'Objet supprimé !' }) })
                         .catch(error => res.status(401).json({ error }));

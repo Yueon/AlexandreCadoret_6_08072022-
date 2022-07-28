@@ -65,9 +65,9 @@ exports.login = (req, res, next) => {
                             // user id identique a la requete d'authentification
                             { userId: user._id },
                             // clé secrete pour encodage
-                            'RANDOM_TOKEN_SECRET',
+                            process.env.TOKEN_SECRET_ALEATOIRE,
                             // durée de vie du token
-                            { expiresIn: '24h' }
+                            { expiresIn: process.env.TOKEN_TEMP }
                         )
                     });
                 })
