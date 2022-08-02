@@ -17,7 +17,7 @@ const path = require('path');
 //protège des attaques par injection
 const mongoSanitize = require('express-mongo-sanitize');
 // middleware d'helmet
-app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 //----------------------------------------------------------------------------------
 // CORS
 //----------------------------------------------------------------------------------

@@ -29,10 +29,14 @@ const errorHandler = error => {
     const address = server.address();
     const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port;
     switch (error.code) {
+        // dans le cas ou l'autorisation est refusée
         case 'EACCES':
             console.error(bind + ' requires elevated privileges.');
+            // process.exit(1) signifie mettre fin au processus avec un échec. process.exit(0) signifie mettre fin au processus sans échec
             process.exit(1);
+            //fin
             break;
+        // dans le cas ou l'adresse rechercher est en cour d'utilisation
         case 'EADDRINUSE':
             console.error(bind + ' is already in use.');
             process.exit(1);

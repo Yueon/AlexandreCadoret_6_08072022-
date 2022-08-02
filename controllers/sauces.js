@@ -4,15 +4,19 @@ const Sauce = require("../models/Sauce");
 const fs = require('fs');
 
 exports.createSauce = (req, res, next) => {
+    // on extrait sauce de la requete via un parse
     const sauceObject = JSON.parse(req.body.sauce);
     console.log("sauceObject", sauceObject)
     delete sauceObject._id;
     delete sauceObject._userId;
+    // on déclare Sauce qui va être une nouvelle instance du modèle sauce avec les infos dont ont a besoin 
     const sauce = new Sauce({
+        // raccourci spread pour récupérer toutes les données de req.body ( title description...)
         ...sauceObject,
+        // imageUrl = le protocol://la valeur du port "host" du dossier images avec le nom ""
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
-
+    // on enregistre l'objet dans la base de donnée
     sauce.save()
         .then(() => { res.status(201).json({ message: 'Objet enregistré !' }) })
         .catch(error => { res.status(400).json({ error }) })
@@ -26,11 +30,16 @@ exports.modifySauce = (req, res, next) => {
     console.log("sauce", sauceObject)
     console.log("paramID", req.params.id)
     delete sauceObject._userId;
+    // l'id de la sauce est l'id inscrit dans l'url
     Sauce.findOne({ _id: req.params.id })
+        // si la sauce existe
         .then((sauce) => {
+            // l'id du créateur de la sauce doit etre le meme que celui identifié par le token
             if (sauce.userId != req.auth.userId) {
                 res.status(401).json({ message: 'Not authorized' });
             } else {
+                // modifie une sauce dans la base de donnée, 1er argument = l'objet modifié avec id correspondant à l'id de la requete
+                // et le 2ème argument = nouvelle objet qui contient la sauce du corp de la requete et que _id correspond à celui des paramètres
                 Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
                     .then(() => res.status(200).json({ message: 'Objet modifié!' }))
                     .catch(error => res.status(401).json({ error }));
@@ -42,13 +51,18 @@ exports.modifySauce = (req, res, next) => {
 };
 
 exports.deleteSauce = (req, res, next) => {
+    //on cherche la sauce dans la base de donnée
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
+            // l'id du créateur de la sauce doit etre le meme que celui identifié par le token
             if (sauce.userId != req.auth.userId) {
                 res.status(401).json({ message: 'Not authorized' });
             } else {
+                // on créer un tableau via l'url en séparant la partie '/images' et on récupère l'indice 1 du tableau qui est le nom
                 const filename = sauce.imageUrl.split('/images/')[1];
+                // unlink supprime l'image de la sauce
                 fs.unlink(`images/${filename}`, () => {
+                    // supprime une sauce dans la base de donnée, argument = l'objet modifié avec id correspondant à l'id de la requete
                     Sauce.deleteOne({ _id: req.params.id })
                         .then(() => { res.status(200).json({ message: 'Objet supprimé !' }) })
                         .catch(error => res.status(401).json({ error }));
